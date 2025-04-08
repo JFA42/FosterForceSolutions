@@ -1,6 +1,7 @@
 import { LightningElement, api, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import updateRecords from '@salesforce/apex/crmaRecordUpdaterController.updateRecords';
+import getObjectFields from '@salesforce/apex/crmaRecordUpdaterController.getObjectFields'; // Your Apex method
 
 export default class crmaRecordUpdater extends LightningElement {
     @api crmaData;
@@ -10,9 +11,30 @@ export default class crmaRecordUpdater extends LightningElement {
     @track dynamicColumns = [];
     @track filteredRecords = [];
     @track draftValues = [];
+    @track fieldOptions = [];
     @track disableSave = true;
 
     allRecords = [];
+
+    // Fetch the field options for the selected object
+    @wire(getObjectFields, { objectApiName: '$objectApiName' })
+    wiredFields({ error, data }) {
+        if (data) {
+            this.fieldOptions = data.map(field => ({
+                label: field.label,
+                value: field.apiName
+            }));
+        } else if (error) {
+            this.fieldOptions = [];
+            console.error('Error fetching field options:', error);
+        }
+    }
+
+    connectedCallback() {
+        if (this.crmaData) {
+            this.allRecords = this.crmaData;
+        }
+    }
 
     connectedCallback() {
         if (this.crmaData) {
