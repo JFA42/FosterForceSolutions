@@ -31,4 +31,27 @@ public with sharing class crmaRecordUpdaterController {
             update sObjectsToUpdate;
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Field> getObjectFields(String objectApiName) {
+        Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectApiName);
+        Map<String, Schema.SObjectField> fieldsMap = objType.getDescribe().fields.getMap();
+        
+        List<Field> fieldList = new List<Field>();
+        for (String fieldName : fieldsMap.keySet()) {
+            Schema.DescribeFieldResult fieldResult = fieldsMap.get(fieldName).getDescribe();
+            fieldList.add(new Field(fieldName, fieldResult.getLabel()));
+        }
+        return fieldList;
+    }
+    
+    public class Field {
+        @AuraEnabled public String apiName;
+        @AuraEnabled public String label;
+
+        public Field(String apiName, String label) {
+            this.apiName = apiName;
+            this.label = label;
+        }
+    }
 }
