@@ -1,0 +1,25 @@
+<!-- fieldSelector.html -->
+<template>
+    <lightning-modal-header label="Select Fields to Update"></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-dual-listbox
+            label="Available Fields"
+            source-label="Available"
+            selected-label="Selected"
+            options={availableFields}
+            value={selectedFields}
+            onchange={handleSelectionChange}
+        ></lightning-dual-listbox>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button
+            label="Cancel"
+            onclick={handleCancel}
+        ></lightning-button>
+        <lightning-button
+            label="Confirm"
+            variant="brand"
+            onclick={handleConfirm}
+        ></lightning-button>
+    </lightning-modal-footer>
+</template>

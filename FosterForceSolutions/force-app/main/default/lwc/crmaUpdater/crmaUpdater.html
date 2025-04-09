@@ -1,0 +1,60 @@
+<template>
+    <lightning-card title="Mass Update Dashboard Records">
+        <div class="slds-p-around_medium">
+            <!-- Record Selection -->
+            <lightning-datatable
+                key-field="Id"
+                data={records}
+                columns={columns}
+                selected-rows={selectedRecords}
+                onrowselection={handleRecordSelection}
+            ></lightning-datatable>
+
+            <!-- Field Selection Button -->
+            <div class="slds-m-top_medium">
+                <lightning-button
+                    label="Select Fields to Update"
+                    onclick={handleFieldSelectionClick}
+                    disabled={!selectedRecords.length}
+                ></lightning-button>
+            </div>
+
+            <!-- Field Selection Modal -->
+            <template if:true={showFieldSelector}>
+                <c-field-selector
+                    available-fields={availableFields}
+                    onfieldselection={handleFieldSelection}
+                ></c-field-selector>
+            </template>
+
+            <!-- Update Form -->
+            <template if:true={showUpdateForm}>
+                <div class="slds-m-top_medium">
+                    <lightning-record-edit-form
+                        object-api-name={objectApiName}
+                        onsuccess={handleUpdateSuccess}
+                    >
+                        <template for:each={selectedFields} for:item="field">
+                            <div key={field.apiName} class="slds-m-bottom_small">
+                                <lightning-input-field
+                                    key={field.apiName}
+                                    field-name={field.apiName}
+                                    value={fieldValues[field.apiName]}
+                                    onchange={handleFieldValueChange}
+                                ></lightning-input-field>
+                            </div>
+                        </template>
+                        <div class="slds-m-top_medium">
+                            <lightning-button
+                                label="Update Selected Records"
+                                variant="brand"
+                                onclick={handleUpdate}
+                                disabled={isLoading}
+                            ></lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

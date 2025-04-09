@@ -1,0 +1,15 @@
+<!-- massUpdateDashboardRecords.js-meta.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>58.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Mass Update Dashboard Records</masterLabel>
+    <targets>
+        <target>lightning__Dashboard</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__Dashboard">
+            <property name="lensIds" type="String" label="Lens IDs" description="Comma-separated list of lens IDs"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
