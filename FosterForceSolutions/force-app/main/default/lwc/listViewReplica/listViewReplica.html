@@ -1,0 +1,142 @@
+<template>
+    <lightning-card title="List View Replica">
+        <div class="slds-p-around_medium">
+            <!-- Search and Filter Section -->
+            <div class="slds-grid slds-wrap slds-p-bottom_medium">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12">
+                    <lightning-input
+                        type="search"
+                        label="Search"
+                        value={searchTerm}
+                        onchange={handleSearch}
+                        placeholder="Search records..."
+                    ></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-p-left_medium">
+                    <lightning-button
+                        label="Mass Update"
+                        icon-name="utility:edit"
+                        onclick={handleMassUpdate}
+                        class="slds-float_right slds-m-left_medium"
+                        disabled={!selectedRecords.length}
+                    ></lightning-button>
+                    <lightning-button
+                        label="Export"
+                        icon-name="utility:download"
+                        onclick={handleExport}
+                        class="slds-float_right"
+                    ></lightning-button>
+                    <lightning-button
+                        label="Column Settings"
+                        icon-name="utility:settings"
+                        onclick={handleColumnSettings}
+                        class="slds-float_right slds-m-right_medium"
+                    ></lightning-button>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <lightning-datatable
+                key-field="id"
+                data={records}
+                columns={columns}
+                sorted-by={sortedBy}
+                sorted-direction={sortedDirection}
+                onsort={handleSort}
+                show-checkbox-column
+                show-row-number-column
+                onrowaction={handleRowAction}
+                selected-rows={selectedRecords}
+                onrowselection={handleRowSelection}
+            ></lightning-datatable>
+
+            <!-- Pagination -->
+            <div class="slds-p-top_medium">
+                <lightning-layout>
+                    <lightning-layout-item padding="around-small">
+                        <lightning-button
+                            label="Previous"
+                            icon-name="utility:chevronleft"
+                            onclick={handlePrevious}
+                            disabled={isFirstPage}
+                        ></lightning-button>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" flexibility="grow">
+                        <div class="slds-align_absolute-center">
+                            Page {currentPage} of {totalPages}
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small">
+                        <lightning-button
+                            label="Next"
+                            icon-name="utility:chevronright"
+                            onclick={handleNext}
+                            disabled={isLastPage}
+                        ></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </div>
+    </lightning-card>
+
+    <!-- Column Settings Modal -->
+    <template if:true={showColumnSettings}>
+        <lightning-modal-header label="Column Settings"></lightning-modal-header>
+        <lightning-modal-body>
+            <lightning-checkbox-group
+                name="columnSettings"
+                label="Select columns to display"
+                options={columnOptions}
+                value={selectedColumns}
+                onchange={handleColumnSelection}
+            ></lightning-checkbox-group>
+        </lightning-modal-body>
+        <lightning-modal-footer>
+            <lightning-button
+                label="Cancel"
+                onclick={closeColumnSettings}
+            ></lightning-button>
+            <lightning-button
+                label="Save"
+                variant="brand"
+                onclick={saveColumnSettings}
+            ></lightning-button>
+        </lightning-modal-footer>
+    </template>
+
+    <!-- Mass Update Modal -->
+    <template if:true={showMassUpdateModal}>
+        <lightning-modal-header label="Mass Update Records"></lightning-modal-header>
+        <lightning-modal-body>
+            <lightning-record-edit-form
+                object-api-name={objectApiName}
+                onsuccess={handleMassUpdateSuccess}
+                onerror={handleMassUpdateError}
+            >
+                <lightning-messages></lightning-messages>
+                <div class="slds-grid slds-wrap">
+                    <template for:each={massUpdateFields} for:item="field">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-p-around_small" key={field.fieldName}>
+                            <lightning-input-field
+                                field-name={field.fieldName}
+                                value={field.value}
+                                onchange={handleFieldChange}
+                            ></lightning-input-field>
+                        </div>
+                    </template>
+                </div>
+            </lightning-record-edit-form>
+        </lightning-modal-body>
+        <lightning-modal-footer>
+            <lightning-button
+                label="Cancel"
+                onclick={closeMassUpdateModal}
+            ></lightning-button>
+            <lightning-button
+                label="Update"
+                variant="brand"
+                onclick={handleMassUpdateSubmit}
+            ></lightning-button>
+        </lightning-modal-footer>
+    </template>
+</template> 
