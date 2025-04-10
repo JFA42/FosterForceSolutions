@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>60.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Related Records List</masterLabel>
+    <description>Displays and allows editing of related Salesforce records in CRM Analytics dashboards</description>
+    <targets>
+        <target>analytics__Dashboard</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="analytics__Dashboard">
+            <property name="objectApiName" type="String" label="Object API Name" required="true"/>
+            <property name="maxRecords" type="Integer" label="Maximum Records" default="100" required="false"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle> 

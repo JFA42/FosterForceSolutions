@@ -1,0 +1,84 @@
+<template>
+    <div class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center">
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">Related Records</h2>
+                </div>
+                <div class="slds-no-flex">
+                    <lightning-button
+                        label="Configure Fields"
+                        onclick={handleFieldConfig}
+                        variant="neutral">
+                    </lightning-button>
+                    <lightning-button
+                        label="Mass Update"
+                        onclick={handleMassUpdate}
+                        variant="brand"
+                        class="slds-m-left_x-small"
+                        disabled={isMassUpdateDisabled}>
+                    </lightning-button>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <template if:true={error}>
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <h2>{error}</h2>
+                </div>
+            </template>
+            <template if:true={isLoading}>
+                <div class="slds-is-relative slds-p-around_medium">
+                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                </div>
+            </template>
+            <template if:true={showRecords}>
+                <div class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                    <table role="grid">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <template for:each={selectedFields} for:item="field">
+                                    <th scope="col" key={field}>
+                                        <div class="slds-truncate">{fieldLabels[field]}</div>
+                                    </th>
+                                </template>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={records} for:item="record">
+                                <tr key={record.id}>
+                                    <template for:each={selectedFields} for:item="field">
+                                        <td key={field}>
+                                            <div class="slds-truncate">
+                                                <lightning-input-field
+                                                    field-name={field}
+                                                    value={record.fields[field].value}
+                                                    variant="label-hidden"
+                                                    onchange={handleFieldChange}>
+                                                </lightning-input-field>
+                                            </div>
+                                        </td>
+                                    </template>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+            <template if:true={showEmptyState}>
+                <div class="slds-text-align_center slds-p-around_medium">
+                    No records found
+                </div>
+            </template>
+        </div>
+    </div>
+    <template if:true={showConfigModal}>
+        <c-field-config-modal
+            object-api-name={objectApiName}
+            selected-fields={selectedFields}
+            onsave={handleConfigSave}
+            oncancel={handleConfigCancel}>
+        </c-field-config-modal>
+    </template>
+</template> 
